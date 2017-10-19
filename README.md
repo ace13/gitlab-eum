@@ -1,7 +1,9 @@
 Gitlab External User Manager
 ============================
 
-Allows registered users to create additional external users to allow read/write access to repositories hosted on a GitLab instance without signup enabled.
+[![pipeline status](https://gitlab.liu.se/aleol57/gitlab-eum/badges/master/pipeline.svg)](https://gitlab.liu.se/aleol57/gitlab-eum/commits/master)
+
+Allows already registered users to create additional external users, to allow read/write access for repositories hosted on a GitLab instance without signup enabled.
 
 ## Development
 
