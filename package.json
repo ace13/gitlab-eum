@@ -16,6 +16,7 @@
   "dependencies": {
     "bootstrap": "^3.3.7",
     "gitlab": "^1.7.1",
+    "jquery": "^3.2.1",
     "passport": "^0.4.0",
     "vue": "^2.0.1",
     "vue-model": "^2.0.7"
@@ -42,6 +43,7 @@
   },
   "browser": {
     "boostrap": "bootstrap/dist/js/bootstrap.min.js",
+    "jquery": "jquery/dist/jquery.min.js",
     "vue": "vue/dist/vue.common.js"
   }
 }

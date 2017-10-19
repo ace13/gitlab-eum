@@ -2,12 +2,31 @@
 
 import Vue from 'vue';
 import App from './App.vue';
+import { default as $ } from 'jquery';
 
-require('bootstrap');
+// To make bootstrap happy about running through browserify
+global.$ = $;
+global.jQuery = $;
 
-Vue.use(require('vue-model'));
+const bootstrap = require('bootstrap');
 
-new Vue({
+import VueModel from 'vue-model';
+
+Vue.use(VueModel, {
+  user: require('./models/user'),
+});
+
+VueModel.classes.defaults.http.getDataFromResponse = function(response) {
+  return response.data;
+};
+
+global.Vue = Vue;
+global.App = new Vue({
   el: '#app',
+
+  models: [
+    'user'
+  ],
+
   render: h => h(App)
 });
