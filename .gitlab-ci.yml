@@ -1,0 +1,12 @@
+---
+image: node:latest
+
+cache:
+  paths:
+    - node_modules/
+
+eslint_client:
+  script:
+    - npm install
+    - npm install eslint eslint-plugin-vue
+    - node node_modules/eslint/bin/eslint.js client/main.js
