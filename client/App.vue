@@ -1,20 +1,16 @@
 <template>
-  <div id="app">
-    <img src="http://vuejs.org/images/logo.png">
-    <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
-      <li><a href="https://gitter.im/vuejs/vue" target="_blank">Gitter Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li><a href="http://router.vuejs.org/" target="_blank">vue-router</a></li>
-      <li><a href="http://vuex.vuejs.org/" target="_blank">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vueify" target="_blank">vueify</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
+  <div id="app" class="container">
+    <h1>External users:</h1>
+    <ul class="list-unstyled">
+      <li v-for="user in external" class="media">
+        <img v-bind:src="user.avatar_url" class="mr-3 user-avatar" alt="Avatar"/>
+        <div class="media-body">
+          <h4>{{ user.name }}</h4>
+          <p class="text-muted"><a v-bind:href="user.web_url">@{{ user.username }}</a> - Created at {{ user.created_at }}</p>
+
+          <a href="#" class="btn btn-primary btn-sm" @click="user.http.fetch()" :disabled="user.http.fetchInProgress"><i class="fa fa-cog"></i></a>
+        </div>
+      </li>
     </ul>
   </div>
 </template>
@@ -24,42 +20,18 @@ export default {
   name: 'app',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      // TODO: Delegate model creation
+      external: [ App.$model('user', { id: 1 }), App.$model('user', { id: 2 }) ] 
     }
-  }
+  },
 }
 </script>
 
 <style scoped>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+.user-avatar {
+  width: 48px;
+  height: 48px;
 
-img {
-  width: 200px;
-  height: 200px;
-}
-
-h1, h2 {
-  font-weight: normal;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: #42b983;
+  border-radius: 5px;
 }
 </style>
