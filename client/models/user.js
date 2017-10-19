@@ -1,11 +1,11 @@
 'use strict';
 
+// As taken from the GitLab API
+// https://gitlab.liu.se/help/api/users.md#single-user
 var User = module.exports = {
   attributes: [
     // Important information
     'id',
-    'is_admin',
-    'external',
     
     // Required attributes for creation
     'username',
@@ -22,10 +22,10 @@ var User = module.exports = {
   ],
 
   http: {
-    baseRoute: 'https://gitlab.liu.se/api/v4/users/',
+    baseRoute: 'https://gitlab.liu.se/api/v4/users/', // XXX: Move to local endpoint once it exists
 
     actions: {
-      update: false
+      update: false,
     }
   },
 };
