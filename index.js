@@ -9,6 +9,9 @@ var passport     = require('passport');
 
 var app = express();
 app.use(express.static(__dirname + '/public'));
+app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
+app.use('/css', express.static(__dirname + '/node_modules/font-awesome/css'));
+app.use('/fonts', express.static(__dirname + '/node_modules/font-awesome/fonts'));
 
 app.listen(8080, () => {
 });
