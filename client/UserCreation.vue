@@ -4,12 +4,12 @@
 
     <form @submit.prevent="validate()" novalidate>
       <input type="text" class="mt-2 form-control" v-bind:class="{ 'is-invalid': errors.fullname, 'is-valid': validated && !errors.fullname }" placeholder="Full Name" aria-label="Full name" v-model.trim="fullname" required/>
-      <div class="invalid-feedback" v-show="errors.fullname">
+      <div class="invalid-feedback" v-if="errors && errors.fullname">
         {{ errors.fullname }}
       </div>
 
       <input type="email" class="mt-2 form-control" v-bind:class="{ 'is-invalid': errors.email, 'is-valid': validated && !errors.email }" placeholder="email@example.com" aria-label="Email" v-model.trim="email"required/>
-      <div class="invalid-feedback" v-show="errors.email">
+      <div class="invalid-feedback" v-if="errors && errors.email">
         {{ errors.email }}
       </div>
 
@@ -17,7 +17,7 @@
         <span class="input-group-addon" id="username-at">@</span>
         <input type="text" class="form-control" v-bind:placeholder="username_placeholder" aria-label="Username" aria-describedby="username-at" v-model.trim="username"/>
       </div>
-      <div class="d-block invalid-feedback" v-show="errors.username">
+      <div class="d-block invalid-feedback" v-if="errors && errors.username">
         {{ errors.username }}
       </div>
 
@@ -50,10 +50,14 @@ export default {
   computed: {
     username_placeholder: function() {
       if (this.fullname && this.fullname.length > 0) {
-        return this.fullname.split(' ').join('.').toLowerCase();
+        return this.fullname.replace(/\s/g, '.').toLowerCase();
       }
 
       return 'Username';
+    },
+
+    has_errors: function() {
+      return Object.keys(this.errors || {}).length !== 0;
     }
   },
 
@@ -97,7 +101,12 @@ export default {
     },
 
     submit: function() {
-      console.log("Submitting new external user");
+      if (!this.validated || this.has_errors) {
+        console.log("Attempting to submit with errors.");
+        return;
+      }
+
+      console.log("TODO: Submit new external user");
       this.close();
     }
   }
