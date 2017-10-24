@@ -38,8 +38,4 @@ export default {
 </script>
 
 <style scoped>
-.user-avatar {
-  width: 64px;
-  height: 64px;
-}
 </style>
