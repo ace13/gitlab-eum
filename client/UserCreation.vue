@@ -2,18 +2,18 @@
   <div class="m-2 md-w-25">
     <h6 class="pb-2">Create user:</h6>
 
-    <form @submit.prevent="validate() && submit()" novalidate>
-      <input type="text" class="mt-2 form-control" v-bind:class="{ 'is-invalid': errors.fullname, 'is-valid': submitted && !errors.fullname }" placeholder="Full Name" aria-label="Full name" v-model.trim="fullname" required/>
+    <form @submit.prevent="validate()" novalidate>
+      <input type="text" class="mt-2 form-control" v-bind:class="{ 'is-invalid': errors.fullname, 'is-valid': validated && !errors.fullname }" placeholder="Full Name" aria-label="Full name" v-model.trim="fullname" required/>
       <div class="invalid-feedback" v-show="errors.fullname">
         {{ errors.fullname }}
       </div>
 
-      <input type="email" class="mt-2 form-control" v-bind:class="{ 'is-invalid': errors.email, 'is-valid': submitted && !errors.email }" placeholder="email@example.com" aria-label="Email" v-model.trim="email"required/>
+      <input type="email" class="mt-2 form-control" v-bind:class="{ 'is-invalid': errors.email, 'is-valid': validated && !errors.email }" placeholder="email@example.com" aria-label="Email" v-model.trim="email"required/>
       <div class="invalid-feedback" v-show="errors.email">
         {{ errors.email }}
       </div>
 
-      <div class="mt-2 input-group" v-bind:class="{ 'is-invalid': errors.username, 'is-valid': submitted && !errors.username }">
+      <div class="mt-2 input-group" v-bind:class="{ 'is-invalid': errors.username, 'is-valid': validated && !errors.username }">
         <span class="input-group-addon" id="username-at">@</span>
         <input type="text" class="form-control" v-bind:placeholder="username_placeholder" aria-label="Username" aria-describedby="username-at" v-model.trim="username"/>
       </div>
@@ -30,6 +30,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'user-creation',
 
@@ -37,7 +39,8 @@ export default {
     return {
       errors: { },
 
-      submitted: false,
+      validated: false,
+
       fullname: '',
       email: '',
       username: ''
@@ -60,8 +63,8 @@ export default {
       this.$emit('closed');
     },
 
-    validate: function() {
-      this.submitted = true;
+    validate: async function() {
+      this.validated = false;
       this.errors = { };
 
       if (!this.fullname) {
@@ -75,11 +78,22 @@ export default {
       if (!username) {
         this.errors.username = "Must specify a name or username";
       } else {
-        // API call?
-        this.errors.username = "Username must be unique";
+        try {
+          await axios.get("https://gitlab.liu.se/api/v4/user?username=" + username)
+          this.$set(this.errors, 'username', "Username must be unique");
+        } catch(err) {
+          if (err.response.status === 401) {
+            this.$set(this.errors, 'username', "Server configuration doesn't allow searching users");
+          } else if (err.response.status === 404) {
+            console.log("Username is free");
+          } else {
+            console.log(err);
+          }
+        }
       }
 
-      return Object.keys(this.errors).length == 0;
+      this.validated = true;
+      return Object.keys(this.errors).length === 0;
     },
 
     submit: function() {
