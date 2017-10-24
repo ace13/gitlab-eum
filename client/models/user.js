@@ -28,4 +28,10 @@ var User = module.exports = {
       update: false,
     }
   },
+
+  computed: {
+    created_at_readable () {
+      return new Date(this.created_at).toLocaleDateString('sv-SE');
+    }
+  }
 };

@@ -1,16 +1,15 @@
 'use strict';
 
 import Vue from 'vue';
+import VueModel from 'vue-model';
 import App from './App.vue';
 import { default as $ } from 'jquery';
 
 // To make bootstrap happy about running through browserify
-global.$ = $;
-global.jQuery = $;
-
+const Popper = require('popper');
+global.jQuery = global.$ = $;
+global.Popper = Popper;
 const bootstrap = require('bootstrap');
-
-import VueModel from 'vue-model';
 
 Vue.use(VueModel, {
   user: require('./models/user'),
