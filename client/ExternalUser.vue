@@ -5,6 +5,7 @@
       <h4 class="mt-0">{{ user.name }}</h4>
       <p class="text-muted"><a v-bind:href="user.web_url">@{{ user.username }}</a> - Created at {{ user.created_at_readable }}</p>
 
+      <!-- Read if current user is an admin, show advanced features -->
       <template v-if="false">
         <a href="#" @click.prevent="user.http.refresh()" class="btn btn-sm btn-primary" title="Reload User Data"><i class="fa fa-cog"></i></a>
         <a href="#" @click.prevent="user.http.destroy()" class="btn btn-sm btn-danger" title="Remove User"><i class="fa fa-eraser"></i></a>
