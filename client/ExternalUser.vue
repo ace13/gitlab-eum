@@ -1,6 +1,6 @@
 <template>
-  <li class="media mt-1">
-    <img v-bind:src="user.avatar_url" class="d-flex align-self-center mr-3 user-avatar" alt="Avatar"/>
+  <li class="media mt-2 user-object">
+    <img v-bind:src="user.avatar_url" class="d-flex align-self-center mr-3 rounded-circle user-avatar" alt="Avatar"/>
     <div class="media-body">
       <h4 class="mt-0">{{ user.name }}</h4>
       <p class="text-muted"><a v-bind:href="user.web_url">@{{ user.username }}</a> - Created at {{ user.created_at_readable }}</p>
@@ -39,5 +39,10 @@ export default {
 .user-avatar {
   width: 64px;
   height: 64px;
+}
+
+.user-object:hover {
+  background-color: #fcfcfc;
+  border-radius: 10px;
 }
 </style>

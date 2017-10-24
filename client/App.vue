@@ -1,16 +1,13 @@
 <template>
-  <div id="app" class="container">
+  <div id="app" class="container mt-5 pt-3 pb-1 rounded">
     <!-- Header goes here -->
 
+    <button class="m-1 btn btn-success" @click="showCreationForm = !showCreationForm" v-if="!showCreationForm">New External User</button>
     <transition name="slide-fade">
-      <user-creation v-if="showCreationForm"></user-creation>
+      <user-creation v-if="showCreationForm" v-on:closed="showCreationForm = false"></user-creation>
     </transition>
 
-    <div class="d-flex flex-row mb-3">
-      <h1 class="mr-auto">External users:</h1>
-      <button class="m-2 btn btn-success" @click="showCreationForm = !showCreationForm">New External User</button>
-    </div>
-
+    <h1 class="mt-4 mb-3">External users:</h1>
     <ul class="list-unstyled">
       <li v-for="user in external" v-bind:user-id="user" is="external-user"></li>
     </ul>
@@ -40,5 +37,7 @@ export default {
 </script>
 
 <style scoped>
-
+div#app {
+  background-color: #fff;
+}
 </style>
