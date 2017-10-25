@@ -18,7 +18,7 @@
     </div>
 
     <div class="position-absolute w-100 text-center" style="bottom: 0px;">
-      <h6 class="text-muted font-weight-light">&copy; Linköpings University - Check me out on our <a href="https://gitlab.liu.se/aleol57/gitlab-eum">GitLab</a></h6>
+      <h6 class="text-muted font-weight-light">&copy; Linköpings University - Available for contributing on our <a href="https://gitlab.liu.se/aleol57/gitlab-eum">GitLab</a></h6>
     </div>
   </div>
 </template>
