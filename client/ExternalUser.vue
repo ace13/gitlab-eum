@@ -35,10 +35,6 @@ export default {
       this.user = this.$model('user', { id: this.userObj });
     }
     this.user.http.fetch();
-
-    console.log(this.user);
-    console.log(this.user.id);
-    console.log(this.user.username);
   }
 }
 </script>
