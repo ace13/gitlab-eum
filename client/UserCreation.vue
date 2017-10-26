@@ -136,32 +136,32 @@ export default {
 /* Taken from https://github.com/lilpug/bootstrap-4-beta-validation */
 /* Removes the default display as none by bootstrap as we want to maintain our own validation */
 .invalid-feedback {
-    display:inherit;
+  display:inherit;
 }
 
 /* allows the is-invalid to be put on the input group div */
 .input-group.is-invalid .input-group-addon {
-    color: #a94442;
-    background-color: #f2dede;
-    border-color: #a94442;
+  color: #a94442;
+  background-color: #f2dede;
+  border-color: #a94442;
 }
 .input-group.is-invalid .input-group-addon, .input-group.is-invalid input {
-    border-color: #dc3545 !important;
+  border-color: #dc3545 !important;
 }
 
 /* allows the is-valid to be put on the input group div */
 .input-group.is-valid .input-group-addon {
-    color: #28a745;
-    background-color: #dff0d8;
-    border-color: #28a745;
+  color: #28a745;
+  background-color: #dff0d8;
+  border-color: #28a745;
 }
 .input-group.is-valid .input-group-addon, .input-group.is-valid input {
-    border-color: #28a745 !important;
+  border-color: #28a745 !important;
 }
 
 /* adjusts the top and bottom spacing for multiple error message output */
 .invalid-feedback p {
-    margin-top:5px;
-    margin-bottom:0px;
+  margin-top:5px;
+  margin-bottom:0px;
 }
 </style>
