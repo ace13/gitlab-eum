@@ -27,7 +27,7 @@
 
       <div class="mt-2">
         <button class="btn btn-primary" type="submit" :disabled="user.http.inProgress"><i v-if="user.http.storeInProgress" class="fa fa-spinner fa-cog"></i> Submit</button>
-        <button class="btn btn-secondary" @click="reset()" type="reset">Reset</button>
+        <button class="btn btn-secondary" @click.prevent="reset()" type="reset">Reset</button>
         <button class="btn btn-danger" @click.prevent="close()">Cancel</button>
       </div>
     </form>
@@ -71,6 +71,8 @@ export default {
     },
     reset: function() {
       this.user = this.$model('user');
+      this.validated = false;
+      this.errors = { };
     },
 
     validate: function() {

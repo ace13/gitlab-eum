@@ -19,18 +19,26 @@ export default {
   name: 'external-user',
   
   props: [
-    'userId'
+    'userObj'
   ],
 
   data () {
     return {
-      user: { id: this.userId }
+      user: {}
     }
   },
 
   created () {
-    this.user = this.$model('user', this.user)
-    this.user.http.fetch()
+    if (typeof(this.userObj) === 'object') {
+      this.user = this.userObj;
+    } else {
+      this.user = this.$model('user', { id: this.userObj });
+    }
+    this.user.http.fetch();
+
+    console.log(this.user);
+    console.log(this.user.id);
+    console.log(this.user.username);
   }
 }
 </script>
