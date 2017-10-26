@@ -2,7 +2,7 @@
   <div>
     <div class="w-100 text-center">
       <!-- TODO -->
-      <h1>&lt;Header&gt;</h1>
+      <h1>&lt;Unidentified Header-like Object&trade;&gt;</h1>
     </div>
 
     <div id="app" class="container my-5 pt-3 pb-1 rounded">
