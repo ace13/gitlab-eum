@@ -1,6 +1,6 @@
 'use strict';
 
-model.exports = {
+module.exports = {
     gitlab: {
         // Base GitLab URL
         url: "https://gitlab.liu.se",

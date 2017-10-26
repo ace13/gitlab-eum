@@ -1,19 +1,21 @@
 var axios  = require('axios');
 var router = require('express-promise-router')();
 
-const gitlabUrl = 'https://gitlab.liu.se'
+var config = require('../config');
 
 axios = axios.create({
-  baseURL: gitlabUrl,
+  baseURL: config.gitlab.url,
   headers: {
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:56.0) Gecko/20100101 Firefox/56.0'
+    'Accept': 'application/json',
+    'User-Agent': 'GitLab-EUM/1.0',
+    'Private-Token': config.gitlab.token
   }
 });
 
 router.get('/', (req, res) => {
   console.log('GET: /users');
 
+  // TODO: Grab from a database
   res.send([1,2,3,4]);
 });
 
@@ -23,6 +25,9 @@ router.post('/', (req, res) => {
   req.body = Object.keys(req.body)
     .filter( key => !['admin', 'skip_confirmation'].includes(key) )
     .reduce( (rs, key) => (rs[key] = req.body[key], rs), {} );
+
+  // TODO: Apply further validation on input
+  // XXX   Make sure user is allowed to create
 
   return axios.post('api/v4/users', req.body)
     .then((response) => {
