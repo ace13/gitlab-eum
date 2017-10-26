@@ -15,6 +15,7 @@ app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 app.use('/css', express.static(__dirname + '/node_modules/font-awesome/css'));
 app.use('/fonts', express.static(__dirname + '/node_modules/font-awesome/fonts'));
 
+app.use('/auth', require('./server/auth'));
 app.use('/users', require('./server/users'));
 
 app.listen(8080, () => {

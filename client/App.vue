@@ -5,30 +5,36 @@
       <h1>&lt;Unidentified Header-like Object&trade;&gt;</h1>
     </div>
 
-    <div id="app" class="container my-5 pt-3 pb-1 rounded">
-      <transition name="fade" mode="out-in" appear>
-        <user-creation v-if="showCreationForm" v-on:closed="closeCreator($event)"></user-creation>
-        <div class="p-2" v-else>
-          <h4>Add external users</h4>
-          <p>Employees and students are allowed to create external users for collaboration with actors outside of Linköpings University.<br/>
-            This application will track and allow creation of such external users, up to a number configurable by the administrators.<br/></p>
-          <button class="btn btn-success" @click="showCreationForm = !showCreationForm">New External User</button>
-        </div>
-      </transition>
-
-      <h2 class="mt-4 mb-3">Existing external users:</h2>
-      <hr/>
-      <transition name="fade" mode="out-in">
-        <ul class="list-unstyled" is="transition-group" name="flip-list" v-if="external">
-          <li v-for="user in external" v-bind:user-obj="user" :key="user.id" is="external-user"></li>
-        </ul>
-        <div class="m-5 media" v-else>
-          <i class="fa fa-spinner fa-spin fa-2x mr-3 align-self-top"></i>
-          <div class="media-body">
-            <h3>Loading external user list ...</h3>
+    <div class="container my-5">
+      <div id="user" class="text-right font-weight-light" v-if="user">
+        
+        <a class="" href="/auth/signout">Signed in as <img class="mini-avatar" v-bind:src="user.avatar_url" v-bind:alt="user.username"/>{{ user.name }} <i class="fa fa-sign-out"></i></a>
+      </div>
+      <div id="app" class="pt-3 px-3 pb-1 rounded">
+        <transition name="fade" mode="out-in" appear>
+          <user-creation v-if="showCreationForm" v-on:closed="closeCreator($event)"></user-creation>
+          <div class="p-2" v-else>
+            <h4>Add external users</h4>
+            <p>Employees and students are allowed to create external users for collaboration with actors outside of Linköpings University.<br/>
+              This application will track and allow creation of such external users, up to a number configurable by the administrators.<br/></p>
+            <button class="btn btn-success" @click="showCreationForm = !showCreationForm">New External User</button>
           </div>
-        </div>
-      </transition>
+        </transition>
+
+        <h2 class="mt-4 mb-3">Existing external users:</h2>
+        <hr/>
+        <transition name="fade" mode="out-in">
+          <ul class="list-unstyled" is="transition-group" name="flip-list" v-if="external">
+            <li v-for="user in external" v-bind:user-obj="user" :key="user.id" is="external-user"></li>
+          </ul>
+          <div class="m-5 media" v-else>
+            <i class="fa fa-spinner fa-spin fa-2x mr-3 align-self-top"></i>
+            <div class="media-body">
+              <h3>Loading external user list ...</h3>
+            </div>
+          </div>
+        </transition>
+      </div>
     </div>
 
     <div id="footer" class="position-fixed w-100 text-center">
@@ -50,7 +56,8 @@ export default {
     return {
       showCreationForm: false,
 
-      external: [] 
+      external: [],
+      user: { }
     }
   },
 
@@ -59,6 +66,11 @@ export default {
       .then((response) => {
         this.external = response.data
           .map((id) => this.$model('user', {id: id}));
+      });
+
+    axios.get('/auth')
+      .then((response) => {
+        this.user = response.data;
       });
   },
 
@@ -89,6 +101,11 @@ div#app {
 div#footer {
   bottom: 0px;
   z-index: -1;
+}
+
+.mini-avatar {
+  width: 24px;
+  height: 24px;
 }
 
 .fade-enter-active, .fade-leave-active {
