@@ -3,7 +3,7 @@
     <img v-bind:src="user.avatar_url" class="d-flex align-self-center mr-3 rounded-circle user-avatar" alt="Avatar"/>
     <div class="media-body">
       <h4 class="mt-0">{{ user.name }}</h4>
-      <p class="text-muted"><a v-bind:href="user.web_url">@{{ user.username }}</a> - Created at {{ user.created_at_readable }}</p>
+      <p class="text-muted"><a v-bind:href="user.web_url">@{{ user.username }}</a> - Created at {{ user.created_at | readable_date }}</p>
 
       <!-- Read if current user is an admin, show advanced features -->
       <template v-if="false">
@@ -35,6 +35,12 @@ export default {
       this.user = this.$model('user', { id: this.userObj });
     }
     this.user.http.fetch();
+  },
+
+  filters: {
+    readable_date (date, locale = 'sv-SE') {
+      return new Date(date).toLocaleDateString(locale);
+    }
   }
 }
 </script>
