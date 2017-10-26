@@ -8,10 +8,16 @@
     <div id="app" class="container my-5 pt-3 pb-1 rounded">
       <transition name="fade" mode="out-in" appear>
         <user-creation v-if="showCreationForm" v-on:closed="closeCreator($event)"></user-creation>
-        <button class="m-1 btn btn-success" @click="showCreationForm = !showCreationForm" v-else>New External User</button>
+        <div class="p-2" v-else>
+          <h4>Add external users</h4>
+          <p>Employees and students are allowed to create external users for collaboration with actors outside of Linköpings University.<br/>
+            This application will track and allow creation of such external users, up to a number configurable by the administrators.<br/></p>
+          <button class="btn btn-success" @click="showCreationForm = !showCreationForm">New External User</button>
+        </div>
       </transition>
 
-      <h1 class="mt-4 mb-3">External users:</h1>
+      <h2 class="mt-4 mb-3">Existing external users:</h2>
+      <hr/>
       <transition name="fade" mode="out-in">
         <ul class="list-unstyled" is="transition-group" name="flip-list" v-if="external">
           <li v-for="user in external" v-bind:user-obj="user" :key="user.id" is="external-user"></li>
