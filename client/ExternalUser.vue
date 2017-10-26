@@ -17,7 +17,7 @@
 <script>
 export default {
   name: 'external-user',
-  
+
   props: [
     'userObj'
   ],
