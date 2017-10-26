@@ -22,18 +22,17 @@ var User = module.exports = {
   ],
 
   http: {
-    baseRoute: 'https://gitlab.liu.se/api/v4/users/', // XXX: Move to local endpoint once it exists
+    baseRoute: '/users/',
 
     actions: {
-      create: {
-        only: ['username','email','name'],
-        with: [{
-          reset_password: true,
-          external: true
-        }]
-      },
-      fetch: {
-        only: ['id'],
+      store: {
+        data: {
+          only: ['username','email','name'],
+          with: [{
+            reset_password: true,
+            external: true
+          }]
+        }
       },
       update: false,
     }
