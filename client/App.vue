@@ -27,6 +27,8 @@
 import ExternalUser from './ExternalUser.vue';
 import UserCreation from './UserCreation.vue';
 
+import axios from 'axios';
+
 export default {
   name: 'app',
 
@@ -34,8 +36,15 @@ export default {
     return {
       showCreationForm: false,
 
-      external: [ 1, 4 ] 
+      external: [] 
     }
+  },
+
+  created () {
+    axios.get('/users')
+      .then((response) => {
+        this.external = response.data;
+      });
   },
 
   components: {
