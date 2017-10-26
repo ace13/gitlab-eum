@@ -3,8 +3,8 @@
     <h6 class="pb-2">Create user:</h6>
 
     <form @submit.prevent="validate() && submit()" novalidate>
-      <div class="alert alert-danger" role="alert" v-if="errors && errors.overall">
-        {{ errors.overall }}
+      <div class="alert alert-danger" role="alert" v-if="errors && errors.general">
+        {{ errors.general }}
       </div>
 
       <input type="text" class="mt-2 form-control" v-bind:class="{ 'is-invalid': errors.fullname, 'is-valid': validated && !errors.fullname }" placeholder="Full Name" aria-label="Full name" v-model.trim="user.name" required/>
@@ -27,6 +27,7 @@
 
       <div class="mt-2">
         <button class="btn btn-primary" type="submit" :disabled="user.http.inProgress"><i v-if="user.http.storeInProgress" class="fa fa-spinner fa-cog"></i> Submit</button>
+        <button class="btn btn-secondary" @click="reset()" type="reset">Reset</button>
         <button class="btn btn-danger" @click.prevent="close()">Cancel</button>
       </div>
     </form>
@@ -65,8 +66,11 @@ export default {
   },
 
   methods: {
-    close: function() {
-      this.$emit('closed');
+    close: function(reason = null) {
+      this.$emit('closed', reason);
+    },
+    reset: function() {
+      this.user = this.$model('user');
     },
 
     validate: function() {
@@ -106,18 +110,21 @@ export default {
       } catch(err) {
         console.log(err);
         if (err.response.status === 401) {
-          this.$set(this.errors, 'overall', "Server is malconfigured, not allowed to create users");
+          this.$set(this.errors, 'general', "Server is malconfigured, not allowed to create users");
         } else if (err.response.status === 409) {
-          this.$set(this.errors, 'email', "This email address is already in use");
-          this.$set(this.errors, 'username', "This username is already in use");
+          var msg = err.response.data.message || 'General error occurred';
+          var token = msg.split(' ')[0].toLowerCase()
+          this.$set(this.errors, token, msg);
         } else {
-          this.$set(this.errors, 'overall', "Something went wrong with processing the request, error " + err.response.status + ";<br/><pre>" + err.response.statusText + "</pre>");
+          this.$set(this.errors, 'general', "Something went wrong when processing the request, error " + err.response.status + ";<br/><pre>" + err.response.statusText + "</pre>");
         }
 
         return false;
       }
 
-      this.close();
+      console.log(this.user);
+
+      this.close(this.user);
     }
   }
 }
