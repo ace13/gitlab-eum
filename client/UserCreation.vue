@@ -2,27 +2,31 @@
   <div class="m-2 md-w-25">
     <h6 class="pb-2">Create user:</h6>
 
-    <form @submit.prevent="validate()" novalidate>
-      <input type="text" class="mt-2 form-control" v-bind:class="{ 'is-invalid': errors.fullname, 'is-valid': validated && !errors.fullname }" placeholder="Full Name" aria-label="Full name" v-model.trim="fullname" required/>
+    <form @submit.prevent="validate() && submit()" novalidate>
+      <div class="alert alert-danger" role="alert" v-if="errors && errors.overall">
+        {{ errors.overall }}
+      </div>
+
+      <input type="text" class="mt-2 form-control" v-bind:class="{ 'is-invalid': errors.fullname, 'is-valid': validated && !errors.fullname }" placeholder="Full Name" aria-label="Full name" v-model.trim="user.name" required/>
       <div class="invalid-feedback" v-if="errors && errors.fullname">
         {{ errors.fullname }}
       </div>
 
-      <input type="email" class="mt-2 form-control" v-bind:class="{ 'is-invalid': errors.email, 'is-valid': validated && !errors.email }" placeholder="email@example.com" aria-label="Email" v-model.trim="email"required/>
+      <input type="email" class="mt-2 form-control" v-bind:class="{ 'is-invalid': errors.email, 'is-valid': validated && !errors.email }" placeholder="email@example.com" aria-label="Email" v-model.trim="user.email"required/>
       <div class="invalid-feedback" v-if="errors && errors.email">
         {{ errors.email }}
       </div>
 
       <div class="mt-2 input-group" v-bind:class="{ 'is-invalid': errors.username, 'is-valid': validated && !errors.username }">
         <span class="input-group-addon" id="username-at">@</span>
-        <input type="text" class="form-control" v-bind:placeholder="username_placeholder" aria-label="Username" aria-describedby="username-at" v-model.trim="username"/>
+        <input type="text" class="form-control" v-bind:placeholder="username_placeholder" aria-label="Username" aria-describedby="username-at" v-model.trim="user.username"/>
       </div>
       <div class="d-block invalid-feedback" v-if="errors && errors.username">
         {{ errors.username }}
       </div>
 
       <div class="mt-2">
-        <button class="btn btn-primary" type="submit">Submit</button>
+        <button class="btn btn-primary" type="submit" :disabled="user.http.inProgress"><i v-if="user.http.storeInProgress" class="fa fa-spinner fa-cog"></i> Submit</button>
         <button class="btn btn-danger" @click.prevent="close()">Cancel</button>
       </div>
     </form>
@@ -30,27 +34,26 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   name: 'user-creation',
 
   data () {
     return {
       errors: { },
+      user: { },
 
       validated: false,
-
-      fullname: '',
-      email: '',
-      username: ''
     }
+  },
+
+  created () {
+    this.user = this.$model('user', this.user);
   },
 
   computed: {
     username_placeholder: function() {
-      if (this.fullname && this.fullname.length > 0) {
-        return this.fullname.replace(/\s/g, '.').toLowerCase();
+      if (this.user.name && this.user.name.length > 0) {
+        return this.user.name.replace(/\s/g, '.').toLowerCase();
       }
 
       return 'Username';
@@ -63,50 +66,54 @@ export default {
 
   methods: {
     close: function() {
-      console.log("Closing user creation");
       this.$emit('closed');
     },
 
-    validate: async function() {
-      this.validated = false;
+    validate: function() {
       this.errors = { };
 
-      if (!this.fullname) {
+      if (!this.user.name) {
         this.errors.fullname = "Must specify a name";
       }
-      if (!this.email || !this.email.includes('@') || !this.email.includes('.')) {
+      if (!this.user.email || !this.user.email.includes('@') || !this.user.email.includes('.')) {
         this.errors.email = "Specify a valid email address";
       }
-      let username = this.username || (this.fullname && this.username_placeholder);
+
+      let username = this.user.username || (this.user.name && this.username_placeholder);
 
       if (!username) {
         this.errors.username = "Must specify a name or username";
-      } else {
-        try {
-          await axios.get("https://gitlab.liu.se/api/v4/user?username=" + username)
-          this.$set(this.errors, 'username', "Username must be unique");
-        } catch(err) {
-          if (err.response.status === 401) {
-            this.$set(this.errors, 'username', "Server configuration doesn't allow searching users");
-          } else if (err.response.status === 404) {
-            console.log("Username is free");
-          } else {
-            console.log(err);
-          }
-        }
       }
 
       this.validated = true;
       return Object.keys(this.errors).length === 0;
     },
 
-    submit: function() {
+    submit: async function() {
       if (!this.validated || this.has_errors) {
         console.log("Attempting to submit with errors.");
-        return;
+        return false;
       }
 
-      console.log("TODO: Submit new external user");
+      if (!this.user.username) {
+        this.user.username = this.username_placeholder;
+      }
+
+      try {
+        let res = await this.user.http.store();
+        console.log("Result:");
+        console.log(res);
+      } catch(err) {
+        console.log(err);
+        if (err.response.status === 401) {
+          this.$set(this.errors, 'overall', "Server is malconfigured, not allowed to create users");
+        } else if (err.response.status === 409) {
+          this.$set(this.errors, 'email', "This email address is already in use");
+          this.$set(this.errors, 'username', "This username is already in use");
+        }
+        return false;
+      }
+
       this.close();
     }
   }
