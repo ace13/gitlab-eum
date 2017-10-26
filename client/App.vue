@@ -62,7 +62,7 @@ export default {
       console.log(ev);
       this.showCreationForm = false;
 
-      if (typeof(ev) === 'object') {
+      if (ev && typeof(ev) === 'object') {
         this.external.unshift(ev);
       }
     }
