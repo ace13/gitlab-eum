@@ -79,7 +79,7 @@ export default {
         this.errors.email = "Specify a valid email address";
       }
 
-      let username = this.user.username || (this.user.name && this.username_placeholder);
+      var username = this.user.username || (this.user.name && this.username_placeholder);
 
       if (!username) {
         this.errors.username = "Must specify a name or username";
@@ -100,7 +100,7 @@ export default {
       }
 
       try {
-        let res = await this.user.http.store();
+        var res = await this.user.http.store();
         console.log("Result:");
         console.log(res);
       } catch(err) {
@@ -110,7 +110,10 @@ export default {
         } else if (err.response.status === 409) {
           this.$set(this.errors, 'email', "This email address is already in use");
           this.$set(this.errors, 'username', "This username is already in use");
+        } else {
+          this.$set(this.errors, 'overall', "Something went wrong with processing the request, error " + err.response.status + ";<br/><pre>" + err.response.statusText + "</pre>");
         }
+
         return false;
       }
 
