@@ -2,33 +2,59 @@
   <div class="m-2 md-w-25">
     <h6 class="pb-2">Create user:</h6>
 
-    <form @submit.prevent="validate() && submit()" novalidate>
+    <form class="container" @submit.prevent="validate() && submit()" novalidate>
       <div class="alert alert-danger" role="alert" v-if="errors && errors.general">
         {{ errors.general }}
       </div>
 
-      <input type="text" class="mt-2 form-control" v-bind:class="{ 'is-invalid': errors.fullname, 'is-valid': validated && !errors.fullname }" placeholder="Full Name" aria-label="Full name" v-model.trim="user.name" required/>
-      <div class="invalid-feedback" v-if="errors && errors.fullname">
-        {{ errors.fullname }}
+      <div class="row mt-4">
+        <div class="col-md-2">
+          <label for="inputName">Full Name: </label>
+        </div>
+        <div class="col-md-10">
+          <input type="text" id="inputName" class="form-control" v-bind:class="{ 'is-invalid': errors.fullname, 'is-valid': validated && !errors.fullname }" placeholder="Full Name" aria-label="Full name" v-model.trim="user.name" required/>
+          <div class="invalid-feedback" v-if="errors && errors.fullname">
+            {{ errors.fullname }}
+          </div>
+        </div>
       </div>
 
-      <input type="email" class="mt-2 form-control" v-bind:class="{ 'is-invalid': errors.email, 'is-valid': validated && !errors.email }" placeholder="email@example.com" aria-label="Email" v-model.trim="user.email"required/>
-      <div class="invalid-feedback" v-if="errors && errors.email">
-        {{ errors.email }}
+      <div class="row mt-2">
+        <div class="col-md-2">
+          <label for="inputEmail">Email</label>
+        </div>
+        <div class="col-md-10">
+          <input type="email" id="inputEmail" class="form-control" v-bind:class="{ 'is-invalid': errors.email, 'is-valid': validated && !errors.email }" placeholder="email@example.com" aria-label="Email" v-model.trim="user.email"required/>
+          <div class="invalid-feedback" v-if="errors && errors.email">
+            {{ errors.email }}
+          </div>
+          <small id="emailHelpBlock" class="form-text text-muted" v-else>
+            The user will receive an email on this address to activate their account with.
+          </small>
+        </div>
       </div>
 
-      <div class="mt-2 input-group" v-bind:class="{ 'is-invalid': errors.username, 'is-valid': validated && !errors.username }">
-        <span class="input-group-addon" id="username-at">@</span>
-        <input type="text" class="form-control" v-bind:placeholder="username_placeholder" aria-label="Username" aria-describedby="username-at" v-model.trim="user.username"/>
-      </div>
-      <div class="d-block invalid-feedback" v-if="errors && errors.username">
-        {{ errors.username }}
+      <div class="row mt-2">
+        <div class="col-md-2">
+          <label class="mt-2" for="inputUsername">Username</label>
+        </div>
+        <div class="col-md-10">
+          <div class="input-group" v-bind:class="{ 'is-invalid': errors.username, 'is-valid': validated && !errors.username }">
+            <span class="input-group-addon" id="username-at">@</span>
+            <input type="text" id="inputUsername" class="form-control" v-bind:placeholder="username_placeholder" aria-label="Username" aria-describedby="username-at" v-model.trim="user.username"/>
+          </div>
+          <div class="d-block invalid-feedback" v-if="errors && errors.username">
+            {{ errors.username }}
+          </div>
+        </div>
       </div>
 
-      <div class="mt-2">
-        <button class="btn btn-primary" type="submit" :disabled="user.http.inProgress"><i v-if="user.http.storeInProgress" class="fa fa-spinner fa-cog"></i> Submit</button>
-        <button class="btn btn-secondary" @click.prevent="reset()" type="reset">Reset</button>
-        <button class="btn btn-danger" @click.prevent="close()">Cancel</button>
+      <div class="row mt-3">
+        <div class="col-md-10 offset-md-2">
+          <button class="m-0 btn btn-primary" type="submit" :disabled="user.http.inProgress"><i v-if="user.http.storeInProgress" class="fa fa-spinner fa-cog"></i> Submit</button>
+          <button class="btn btn-secondary" @click.prevent="reset()" type="reset">Reset</button>
+          <button class="btn btn-danger" @click.prevent="close()">Cancel</button>
+        </div>
       </div>
     </form>
   </div>
@@ -101,7 +127,9 @@ export default {
         return false;
       }
 
+      var changed_username = false;
       if (!this.user.username) {
+        changed_username = true;
         this.user.username = this.username_placeholder;
       }
 
@@ -121,6 +149,7 @@ export default {
           this.$set(this.errors, 'general', "Something went wrong when processing the request, error " + err.response.status + ";<br/><pre>" + err.response.statusText + "</pre>");
         }
 
+        this.user.username = null;
         return false;
       }
 

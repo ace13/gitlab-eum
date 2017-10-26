@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="w-100 text-center">
+    <div class="container text-center mb-5">
       <!-- TODO -->
       <h1>&lt;Unidentified Header-like Object&trade;&gt;</h1>
     </div>
 
-    <div class="container my-5">
+    <div class="container my-4">
       <div id="user" class="text-right font-weight-light" v-if="user">
         
         <a class="" href="/auth/signout">Signed in as <img class="mini-avatar" v-bind:src="user.avatar_url" v-bind:alt="user.username"/>{{ user.name }} <i class="fa fa-sign-out"></i></a>
@@ -37,7 +37,7 @@
       </div>
     </div>
 
-    <div id="footer" class="position-fixed w-100 text-center">
+    <div id="footer" class="position-static container text-center">
       <h6 class="text-muted font-weight-light">&copy; Linköpings University - Available for contributing on our <a href="https://gitlab.liu.se/aleol57/gitlab-eum">GitLab</a></h6>
     </div>
   </div>
