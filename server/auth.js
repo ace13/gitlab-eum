@@ -1,5 +1,8 @@
 var router = require('express-promise-router')();
 
+var ensureLogin  = require('connect-ensure-login').ensureLoggedIn;
+var ensureLogout = require('connect-ensure-login').ensureLoggedOut;
+
 var config = require('../config');
 
 router.get('/', (req, res) => {
@@ -16,6 +19,9 @@ router.get('/', (req, res) => {
 
 router.get('/signout', (req, res) => {
   console.log('GET: /auth/signout');
+
+  req.logout();
+  delete req.session;
 
   res.redirect(config.gitlab.url);
 });
