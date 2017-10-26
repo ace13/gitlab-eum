@@ -13,15 +13,15 @@
 
       <h1 class="mt-4 mb-3">External users:</h1>
       <transition name="fade" mode="out-in">
-      <ul class="list-unstyled" is="transition-group" name="flip-list" v-if="external">
-        <li v-for="user in external" v-bind:user-obj="user" :key="user.id" is="external-user"></li>
-      </ul>
-      <div class="m-5 media" v-else>
-        <i class="fa fa-spinner fa-spin fa-2x mr-3 align-self-top"></i>
-        <div class="media-body">
-          <h3>Loading external user list ...</h3>
+        <ul class="list-unstyled" is="transition-group" name="flip-list" v-if="external">
+          <li v-for="user in external" v-bind:user-obj="user" :key="user.id" is="external-user"></li>
+        </ul>
+        <div class="m-5 media" v-else>
+          <i class="fa fa-spinner fa-spin fa-2x mr-3 align-self-top"></i>
+          <div class="media-body">
+            <h3>Loading external user list ...</h3>
+          </div>
         </div>
-      </div>
       </transition>
     </div>
 
