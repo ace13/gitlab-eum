@@ -5,10 +5,10 @@
       <h1>&lt;Unidentified Header-like Object&trade;&gt;</h1>
     </div>
 
-    <div class="container my-4">
-      <div id="user" class="text-right font-weight-light" v-if="user">
+    <div class="container my-4" v-if="user">
+      <div id="user" class="text-right font-weight-light">
         
-        <a class="" href="/auth/signout">Signed in as <img class="mini-avatar" v-bind:src="user.avatar_url" v-bind:alt="user.username"/>{{ user.name }} <i class="fa fa-sign-out"></i></a>
+        <a href="/auth/signout">Signed in as <img class="mini-avatar rounded-circle" v-bind:src="user.avatar_url" v-bind:alt="user.username"/>{{ user.name }} <i class="fa fa-sign-out"></i></a>
       </div>
       <div id="app" class="pt-3 px-3 pb-1 rounded">
         <transition name="fade" mode="out-in" appear>
@@ -34,6 +34,13 @@
             </div>
           </div>
         </transition>
+      </div>
+    </div>
+
+    <!-- TODO: Autologin -->
+    <div class="container my-5" v-else>
+      <div id="app" class="rounded p-5 text-center">
+        <a href="/auth/signin"><h2>Sign in <i class="fa fa-sign-in"></i></h2></a>
       </div>
     </div>
 
@@ -70,7 +77,11 @@ export default {
 
     axios.get('/auth')
       .then((response) => {
+        console.log("Signed in as " + response.data.username);
+        console.log(response.data);
         this.user = response.data;
+      }, (err) => {
+        this.user = null;
       });
   },
 
