@@ -10,7 +10,12 @@ module.exports = {
     // Base GitLab URL
     url: "https://gitlab.liu.se",
     // Access Token with admin access to the GitLab instance
-    token: "<admin token>"
+    token: "<admin token>",
+
+    // Information about the OAuth application
+    client_id: "<id>",
+    client_secret: "<secret>",
+    client_callback: "<callback URL>",
   },
 
   // Same values as for https://gitlab.liu.se/help/api/users.md#user-creation
