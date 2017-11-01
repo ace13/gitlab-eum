@@ -1,3 +1,5 @@
+'use strict';
+
 var axios  = require('axios');
 var router = require('express-promise-router')();
 

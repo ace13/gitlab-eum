@@ -1,3 +1,5 @@
+'use strict';
+
 var router         = require('express-promise-router')();
 var passport       = require('passport');
 var GitLabStrategy = require('passport-gitlab2').Strategy;
