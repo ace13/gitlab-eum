@@ -3,14 +3,11 @@
 var router         = require('express-promise-router')();
 var passport       = require('passport');
 var GitLabStrategy = require('passport-gitlab2').Strategy;
-
-var ensureLogin  = require('connect-ensure-login').ensureLoggedIn;
-var ensureLogout = require('connect-ensure-login').ensureLoggedOut;
+var ensureLogin    = require('connect-ensure-login').ensureLoggedIn;
+var ensureLogout   = require('connect-ensure-login').ensureLoggedOut;
 
 var config = require('../config');
 
-// TODO: Database of some kind for user tokens
-var _tokenStore = {};
 var _strategy = new GitLabStrategy({
     clientID: config.gitlab.client_id,
     clientSecret: config.gitlab.client_secret,
@@ -22,8 +19,10 @@ var _strategy = new GitLabStrategy({
   }
 );
 
-// refresh.use(_strategy);
 passport.use(_strategy);
+
+// TODO: Database or stateless store of some kind for user tokens
+var _tokenStore = {};
 passport.serializeUser(function(user, cb) {
   _tokenStore[user.id] = user;
   cb(null, user.id);

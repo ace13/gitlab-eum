@@ -20,7 +20,7 @@ app.use('/css', express.static(__dirname + '/node_modules/font-awesome/css'));
 app.use('/fonts', express.static(__dirname + '/node_modules/font-awesome/fonts'));
 
 app.use('/auth', require('./server/auth'));
-app.use('/users', ensureLogin('/auth'), require('./server/users'));
+app.use('/users', ensureLogin('/auth/signin'), require('./server/users'));
 
 app.listen(8080, () => {
 });
