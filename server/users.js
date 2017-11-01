@@ -1,11 +1,7 @@
 'use strict';
 
-var axios  = require('axios');
-var router = require('express-promise-router')();
-
-var config = require('../config');
-
-axios = axios.create({
+const config = require('../config');
+const axios  = require('axios').create({
   baseURL: config.gitlab.url,
   headers: {
     'Accept': 'application/json',
@@ -13,12 +9,27 @@ axios = axios.create({
     'Private-Token': config.gitlab.token
   }
 });
+const router   = require('express-promise-router')();
+const { Pool } = require('pg');
 
-router.get('/', (req, res) => {
+const db = new Pool();
+
+// TODO: Figure out the perfect db layout
+const seed = `
+CREATE TABLE IF NOT EXISTS external_users (
+  id INTEGER PRIMARY KEY,
+  owner_id INTEGER NOT NULL,
+  username VARCHAR(256) NOT NULL,
+  date_added TIMESTAMP DEFAULT NOW()
+);
+`;
+
+router.get('/', async (req, res) => {
   console.log('GET: /users');
 
-  // TODO: Grab from a database
-  res.send([1,2,3,4]);
+  const { rows } = await db.query('SELECT * FROM external_users WHERE owner_id = $1', req.user.id);
+
+  res.send(rows.map((row) => row.id));
 });
 
 router.post('/', (req, res) => {
