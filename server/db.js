@@ -5,6 +5,11 @@ const config = require('../config');
 
 const pool = new Pool();
 
+pool.on('error', (err) => {
+  console.log("DB Pool error occured;");
+  console.log(err);
+});
+
 // TODO: Figure out the perfect db layout, or get the one from IDA
 const seed = `
 CREATE TABLE IF NOT EXISTS external_users (

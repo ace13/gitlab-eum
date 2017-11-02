@@ -40,6 +40,9 @@ router.post('/', async (req, res) => {
     try {
       const queryText = 'INSERT INTO external_users(id, owner_id, username, date_added) VALUES($1, $2, $3, NOW())';
       await db.query(queryText, [data.id, req.user.id, data.username]);
+    } catch(err) {
+      console.log("> DB Error:");
+      console.log(err);
     }
 
     res.send(data);
