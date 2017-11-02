@@ -18,6 +18,15 @@ module.exports = {
     client_callback: "<callback URL>",
   },
 
+  // Same values as for connection with libpq
+  postgres: {
+    user: 'username',
+    host: 'pg.example.com',
+    database: 'db_name',
+    password: 'password',
+    port: 1234
+  };
+
   // Same values as for https://gitlab.liu.se/help/api/users.md#user-creation
   creation_default: {
     external: true,
