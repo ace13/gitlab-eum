@@ -1,6 +1,9 @@
 'use strict';
 
 const config = require('../config');
+
+const db     = require('db');
+const router = require('express-promise-router')();
 const axios  = require('axios').create({
   baseURL: config.gitlab.url,
   headers: {
@@ -9,20 +12,6 @@ const axios  = require('axios').create({
     'Private-Token': config.gitlab.token
   }
 });
-const router   = require('express-promise-router')();
-const { Pool } = require('pg');
-
-const db = new Pool();
-
-// TODO: Figure out the perfect db layout
-const seed = `
-CREATE TABLE IF NOT EXISTS external_users (
-  id INTEGER PRIMARY KEY,
-  owner_id INTEGER NOT NULL,
-  username VARCHAR(256) NOT NULL,
-  date_added TIMESTAMP DEFAULT NOW()
-);
-`;
 
 router.get('/', async (req, res) => {
   console.log('GET: /users');
@@ -32,7 +21,7 @@ router.get('/', async (req, res) => {
   res.send(rows.map((row) => row.id));
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   console.log("POST: /users");
   console.log(req.body);
   req.body = Object.keys(req.body)
@@ -42,31 +31,40 @@ router.post('/', (req, res) => {
   // TODO: Apply further validation on input
   // XXX   Make sure user is allowed to create
 
-  return axios.post('api/v4/users', req.body)
-    .then((response) => {
-      console.log("> Response:");
-      console.log(response.data);
-      res.send(response.data);
-    }, (err) => {
-      console.log("> Error:");
-      console.log(err.response.data);
-      res.status(err.response.status).send(err.response.data);
-    });
+  try {
+    const response = await axios.post('api/v4/users', req.body)
+    const data = response.data
+    console.log("> Response:");
+    console.log(data);
+
+    try {
+      const queryText = 'INSERT INTO external_users(id, owner_id, username, date_added) VALUES($1, $2, $3, NOW())';
+      await db.query(queryText, [data.id, req.user.id, data.username]);
+    }
+
+    res.send(data);
+  } catch(err) {
+    console.log("> Error:");
+    console.log(err.response.data);
+    res.status(err.response.status).send(err.response.data);
+  }
 });
 
-router.get('/:userId', (req, res) => {
+router.get('/:userId', async (req, res) => {
   console.log('GET: /users/' + req.params.userId);
 
-  return axios.get('api/v4/users/' + req.params.userId)
-    .then((response) => {
-      console.log("> Response:");
-      console.log(response.data);
-      res.send(response.data);
-    }, (err) => {
-      console.log("> Error:");
-      console.log(err.response.data);
-      res.status(err.response.status).send(err.response.data);
-    });
+  try {
+    const response = await axios.get('api/v4/users/' + req.params.userId)
+    const data = response.data
+    console.log("> Response:");
+    console.log(data);
+
+    res.send(data);
+  } catch(err) {
+    console.log("> Error:");
+    console.log(err.response.data);
+    res.status(err.response.status).send(err.response.data);
+  }
 });
 
 module.exports = router;
