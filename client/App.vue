@@ -37,10 +37,10 @@
       </div>
     </div>
 
-    <!-- TODO: Autologin -->
     <div class="container my-5" v-else>
       <div id="app" class="rounded p-5 text-center">
-        <a href="/auth/signin"><h2>Sign in <i class="fa fa-sign-in"></i></h2></a>
+        <h2 class="mt-2"><i class="fa fa-spin fa-spinner"></i> Signing in...</h2>
+        <p class="font-weight-light text-muted">(<a href="/auth/signin">Click here if not redirected successfully <i class="fa fa-sign-in"></i></a>)</p>
       </div>
     </div>
 
@@ -82,6 +82,8 @@ export default {
         this.user = response.data;
       }, (err) => {
         this.user = null;
+
+        window.location.href = '/auth/signin';
       });
   },
 
