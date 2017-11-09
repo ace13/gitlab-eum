@@ -20,4 +20,4 @@ CREATE TABLE IF NOT EXISTS external_users (
 );
 `;
 
-module exports = pool;
+module.exports = pool;

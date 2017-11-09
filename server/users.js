@@ -2,7 +2,7 @@
 
 const config = require('../config');
 
-const db     = require('db');
+const db     = require('./db');
 const router = require('express-promise-router')();
 const axios  = require('axios').create({
   baseURL: config.gitlab.url,
