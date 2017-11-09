@@ -7,7 +7,7 @@
 
     <div class="container my-4" v-if="user">
       <div id="user" class="text-right font-weight-light">
-        
+
         <a href="/auth/signout">Signed in as <img class="mini-avatar rounded-circle" v-bind:src="user.avatar_url" v-bind:alt="user.username"/>{{ user.name }} <i class="fa fa-sign-out"></i></a>
       </div>
       <div id="app" class="pt-3 px-3 pb-1 rounded">
