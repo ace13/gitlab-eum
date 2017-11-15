@@ -11,6 +11,17 @@
         <a href="/auth/signout">Signed in as <img class="mini-avatar rounded-circle" v-bind:src="user.avatar_url" v-bind:alt="user.username"/>{{ user.name }} <i class="fa fa-sign-out"></i></a>
       </div>
       <div id="app" class="pt-3 px-3 pb-1 rounded">
+        <transition-group name="fade" mode="out-in" tag="div">
+          <div v-for="(alert, alert_id) in alerts" v-bind:key="alert_id">
+            <div class="alert" :class="'alert-' + alert.class" role="alert">
+              <strong>{{ alert.reason }}</strong>, failed to {{ alert.action }}
+              <button type="button" class="close" aria-label="Close" @click.prevent="alerts.splice(alert_id, 1)">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </diV>
+          </div>
+        </transition-group>
+
         <transition name="fade" mode="out-in" appear>
           <user-creation v-if="showCreationForm" v-on:closed="closeCreator($event)"></user-creation>
           <div class="p-2" v-else>
@@ -63,16 +74,28 @@ export default {
     return {
       showCreationForm: false,
 
+      alerts: [],
       external: [],
       user: { }
     }
   },
 
   created () {
+    Bus.$on('alert', (alert) => { this.alerts.push(alert) });
+
     axios.get('/users')
       .then((response) => {
         this.external = response.data
           .map((id) => this.$model('user', {id: id}));
+      }, (error) => {
+        console.log("Users request failed:");
+        console.log(error);
+
+        Bus.$emit('alert', {
+          class: 'danger',
+          action: "list users",
+          reason: error.response.data.message
+        });
       });
 
     axios.get('/auth')

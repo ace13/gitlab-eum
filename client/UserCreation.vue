@@ -3,10 +3,6 @@
     <h6 class="pb-2">Create user:</h6>
 
     <form class="container" @submit.prevent="validate() && submit()" novalidate>
-      <div class="alert alert-danger" role="alert" v-if="errors && errors.general">
-        {{ errors.general }}
-      </div>
-
       <div class="row mt-4">
         <div class="col-md-2">
           <label for="inputName">Full Name: </label>
@@ -140,13 +136,13 @@ export default {
       } catch(err) {
         console.log(err);
         if (err.response.status === 401) {
-          this.$set(this.errors, 'general', "Server is malconfigured, not allowed to create users");
+          Bus.$emit('alert', { class: 'danger', action: 'create user', reason: 'Malconfigured server' });
         } else if (err.response.status === 409) {
           var msg = err.response.data.message || 'General error occurred';
           var token = msg.split(' ')[0].toLowerCase()
           this.$set(this.errors, token, msg);
         } else {
-          this.$set(this.errors, 'general', "Something went wrong when processing the request, error " + err.response.status + ";<br/><pre>" + err.response.statusText + "</pre>");
+          Bus.$emit('alert', { class: 'danger', action: 'create user', reason: err.response.data.message });
         }
 
         this.user.username = null;

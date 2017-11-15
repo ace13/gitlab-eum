@@ -20,6 +20,7 @@ VueModel.classes.defaults.http.getDataFromResponse = function(response) {
 };
 
 global.Vue = Vue;
+global.Bus = new Vue();
 global.App = new Vue({
   el: '#app',
 
