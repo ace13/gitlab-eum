@@ -13,7 +13,8 @@ pool.on('error', (err) => {
 // TODO: Figure out the perfect db layout, or get the one from IDA
 const seed = `
 CREATE TABLE IF NOT EXISTS external_users (
-  id INTEGER PRIMARY KEY,
+  id SERIAL,
+  user_id INTEGER,
   owner_id INTEGER NOT NULL,
   username VARCHAR(256) NOT NULL,
   date_added TIMESTAMP DEFAULT NOW()

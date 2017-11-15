@@ -16,7 +16,13 @@ const axios  = require('axios').create({
 router.get('/', async (req, res) => {
   console.log('GET: /users');
 
-  const { rows } = await db.query('SELECT * FROM external_users WHERE owner_id = $1', req.user.id);
+  try {
+    const { rows } = await db.query('SELECT * FROM external_users WHERE owner_id = $1', req.user.id);
+  } catch(err) {
+    console.log("> DB Error:");
+    console.log(err);
+    return res.status(500).send({ 'message': "Database error occured" });
+  }
 
   res.send(rows.map((row) => row.id));
 });
@@ -32,17 +38,39 @@ router.post('/', async (req, res) => {
   // XXX   Make sure user is allowed to create
 
   try {
+    var dbResponse = null;
+
+    try {
+      const queryText = 'INSERT INTO external_users(owner_id, username, date_added) VALUES($1, $2, NOW())';
+      console.log("> DB Query:");
+      console.log(queryText);
+      dbResponse = await db.query(queryText, [req.user.id, req.body.username]);
+      console.log("> DB Response:");
+      console.log(dbResponse);
+    } catch(err) {
+      console.log("> DB Error:");
+      console.log(err);
+
+      return res.status(500).send({ 'message': "Database error occured" });
+    }
+
     const response = await axios.post('api/v4/users', req.body)
     const data = response.data
     console.log("> Response:");
     console.log(data);
 
     try {
-      const queryText = 'INSERT INTO external_users(id, owner_id, username, date_added) VALUES($1, $2, $3, NOW())';
-      await db.query(queryText, [data.id, req.user.id, data.username]);
+      const queryText = 'UPDATE external_users SET user_id = $2 WHERE id = $1';
+      console.log("> DB Query:");
+      console.log(queryText);
+      dbResponse = await db.query(queryText, [dbResponse.id, data.id]);
+      console.log("> DB Response:");
+      console.log(dbResponse);
     } catch(err) {
       console.log("> DB Error:");
       console.log(err);
+
+      return res.status(500).send({ 'message': "Database error occured" });
     }
 
     res.send(data);
