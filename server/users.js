@@ -60,6 +60,18 @@ router.post('/', async (req, res) => {
     console.log(data);
 
     try {
+      const queryText = 'INSERT INTO audit_events(event, user_id, message) VALUES($1, $2, $3)';
+      console.log("> DB Query:");
+      console.log(queryText);
+      const auditresp = await db.query(queryText, ['user.create', req.user.id, `Created account: ${dbResponse.body.name}  <${dbResponse.body.email}>, username: ${dbResponse.body.username}`]);
+      console.log("> DB Response:");
+      console.log(auditresp);
+    } catch(err) {
+      console.log("> DB Error:");
+      console.log(err);
+    }
+
+    try {
       const queryText = 'UPDATE external_users SET user_id = $2 WHERE id = $1';
       console.log("> DB Query:");
       console.log(queryText);
