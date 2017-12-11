@@ -23,4 +23,5 @@ app.use('/auth', require('./server/auth'));
 app.use('/users', ensureLogin('/auth/signin'), require('./server/users'));
 
 app.listen(8080, () => {
+  console.log("Listening on 8080");
 });

@@ -34,9 +34,8 @@ CREATE TABLE IF NOT EXISTS audit_events (
 (async () => {
   const client = await pool.connect();
   try {
-    console.log("Applying database seed.")
+    console.log("Applying database seed...")
     const res = await client.query(seed);
-    console.log(res);
   } finally {
     client.release();
   }
