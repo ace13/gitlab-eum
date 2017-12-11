@@ -42,7 +42,7 @@ router.post('/', async (req, res) => {
     const dbResponse = await db.query(queryText, [req.user.id]);
 
     if (dbResponse.rowCount >= config.external_limit) {
-      return res.status(400).send({ 'message': 'External user limit reached' });
+      return res.status(403).send({ 'message': 'External user limit reached' });
     }
   } catch(err) {
     console.log("> DB Error:");
@@ -73,11 +73,11 @@ router.post('/', async (req, res) => {
       const queryText = 'INSERT INTO audit_events(event, user_id, message) VALUES($1, $2, $3)';
       const auditresp = await db.query(queryText, ['user.create', req.user.id, `Created account: ${data.name} <${data.email}>, username: ${data.username}`]);
     } catch(err) {
-      console.log('> DB Error:');
+      console.log('> DB Error on audit:');
       console.log(err);
     }
 
-    res.send(data);
+    res.status(201).send(data);
   } catch(err) {
     console.log('> Error:');
     console.log(err.response.data);
@@ -87,6 +87,22 @@ router.post('/', async (req, res) => {
 
 router.get('/:userId', async (req, res) => {
   console.log('GET: /users/' + req.params.userId);
+
+  if (!req.user.is_admin) {
+    try {
+      const queryText = 'SELECT * FROM external_users WHERE owner_id = $1';
+      const dbResponse = await db.query(queryText, [req.user.id]);
+
+      if (!dbResponse.rows.find((uid) => uid.user_id == req.params.userId)) {
+        console.log(`External user ${req.params.userId} not related to ${req.user.username}.`);
+        return res.status(403).send({ 'message': 'Requested User ID is not related to the authenticated account.' });
+      }
+    } catch(err) {
+      console.log("> DB Error:");
+      console.log(err);
+      return res.status(500).send({ 'message': "Database error occured" });
+    }
+  }
 
   try {
     const response = await axios.get('api/v4/users/' + req.params.userId)
