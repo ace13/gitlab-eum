@@ -7,6 +7,6 @@ cache:
 
 client:
   script:
-    - npm install --only=production
+    - npm install
     - mkdir -p public/js public/css
     - npm run build
