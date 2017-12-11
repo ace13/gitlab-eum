@@ -57,7 +57,7 @@ router.post('/', async (req, res) => {
   console.log("POST: /users");
   console.log(req.body);
   req.body = Object.keys(req.body)
-    .filter( key => !['admin', 'skip_confirmation'].includes(key) )
+    .filter( key => ['email','username','name','skype','linkedin','twitter','website_url','organization','bio','location','avatar'].includes(key) )
     .reduce( (rs, key) => (rs[key] = req.body[key], rs), {} );
 
   try {
@@ -84,7 +84,7 @@ router.post('/', async (req, res) => {
 
     console.log('> REST Query:');
     console.log('POST api/v4/users');
-    const response = await axios.post('api/v4/users', req.body)
+    const response = await axios.post('api/v4/users', Object.assign({}, req.body, { external: true, reset_password: true }))
     const data = response.data
     console.log('> Response:');
     console.log(data);
