@@ -2,8 +2,8 @@
   <li class="media mt-2 user-object">
     <img v-bind:src="user.avatar_url" class="d-flex align-self-center mr-3 rounded-circle user-avatar" alt="Avatar"/>
     <div class="media-body">
-      <h4 class="mt-0">{{ user.name }}</h4>
-      <p class="text-muted"><a v-bind:href="user.web_url">@{{ user.username }}</a> - {{ user.state }} - Created at {{ user.created_at | readable_date }}</p>
+      <h4 class="mt-0">{{ user.name }} &lt;<a :href="'mailto:'+user.name+' <'+user.email+'>'">{{ user.email }}</a>&gt;</h4>
+      <p class="text-muted"><a v-bind:href="user.web_url">@{{ user.username }}</a> - <span :class="{'text-danger': user.state != 'active'}">{{ user.state }}</span> - Created at {{ user.created_at | readable_date }}</p>
 
       <!-- Read if current user is an admin, show advanced features -->
       <template v-if="false">
@@ -52,8 +52,12 @@ export default {
   height: 64px;
 }
 
+.user-object {
+  transition: background-color 0.2s;
+  border-radius: 50px;
+}
 .user-object:hover {
-  background-color: #fcfcfc;
-  border-radius: 10px;
+  background-color: #fafafa;
+  border-radius: 50px;
 }
 </style>
