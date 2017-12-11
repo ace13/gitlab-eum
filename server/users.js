@@ -17,14 +17,20 @@ router.get('/', async (req, res) => {
   console.log('GET: /users');
 
   try {
-    const { rows } = await db.query('SELECT * FROM external_users WHERE owner_id = $1', req.user.id);
+    const queryText = 'SELECT * FROM external_users WHERE owner_id = $1';
+    console.log('> DB Query:');
+    console.log(queryText);
+    const dbResponse = await db.query(queryText, [req.user.id]);
+    console.log('> DB Response:');
+    console.log(dbResponse);
+    var rows = dbResponse.rows;
+
+    res.send(rows.map((row) => row.id));
   } catch(err) {
     console.log("> DB Error:");
     console.log(err);
     return res.status(500).send({ 'message': "Database error occured" });
   }
-
-  res.send(rows.map((row) => row.id));
 });
 
 router.post('/', async (req, res) => {
@@ -40,54 +46,42 @@ router.post('/', async (req, res) => {
   try {
     var dbResponse = null;
 
-    try {
-      const queryText = 'INSERT INTO external_users(owner_id, username, date_added) VALUES($1, $2, NOW())';
-      console.log("> DB Query:");
-      console.log(queryText);
-      dbResponse = await db.query(queryText, [req.user.id, req.body.username]);
-      console.log("> DB Response:");
-      console.log(dbResponse);
-    } catch(err) {
-      console.log("> DB Error:");
-      console.log(err);
-
-      return res.status(500).send({ 'message': "Database error occured" });
-    }
-
+    console.log('> REST Query:');
+    console.log('POST api/v4/users');
     const response = await axios.post('api/v4/users', req.body)
     const data = response.data
-    console.log("> Response:");
+    console.log('> Response:');
     console.log(data);
 
     try {
-      const queryText = 'INSERT INTO audit_events(event, user_id, message) VALUES($1, $2, $3)';
-      console.log("> DB Query:");
+      const queryText = 'INSERT INTO external_users(owner_id, user_id, username) VALUES($1, $2, $3)';
+      console.log('> DB Query:');
       console.log(queryText);
-      const auditresp = await db.query(queryText, ['user.create', req.user.id, `Created account: ${dbResponse.body.name}  <${dbResponse.body.email}>, username: ${dbResponse.body.username}`]);
-      console.log("> DB Response:");
-      console.log(auditresp);
+      dbResponse = await db.query(queryText, [req.user.id, data.id, req.body.username]);
+      console.log('> DB Response:');
+      console.log(dbResponse);
     } catch(err) {
-      console.log("> DB Error:");
+      console.log('> DB Error:');
       console.log(err);
+
+      return res.status(500).send({ 'message': 'Database error occured' });
     }
 
     try {
-      const queryText = 'UPDATE external_users SET user_id = $2 WHERE id = $1';
-      console.log("> DB Query:");
+      const queryText = 'INSERT INTO audit_events(event, user_id, message) VALUES($1, $2, $3)';
+      console.log('> DB Query:');
       console.log(queryText);
-      dbResponse = await db.query(queryText, [dbResponse.id, data.id]);
-      console.log("> DB Response:");
-      console.log(dbResponse);
+      const auditresp = await db.query(queryText, ['user.create', req.user.id, `Created account: ${dbResponse.name} <${dbResponse.email}>, username: ${dbResponse.username}`]);
+      console.log('> DB Response:');
+      console.log(auditresp);
     } catch(err) {
-      console.log("> DB Error:");
+      console.log('> DB Error:');
       console.log(err);
-
-      return res.status(500).send({ 'message': "Database error occured" });
     }
 
     res.send(data);
   } catch(err) {
-    console.log("> Error:");
+    console.log('> Error:');
     console.log(err.response.data);
     res.status(err.response.status).send(err.response.data);
   }
@@ -97,14 +91,16 @@ router.get('/:userId', async (req, res) => {
   console.log('GET: /users/' + req.params.userId);
 
   try {
+    console.log('> REST Query:');
+    console.log('GET api/v4/users/' + req.params.userId);
     const response = await axios.get('api/v4/users/' + req.params.userId)
     const data = response.data
-    console.log("> Response:");
+    console.log('> Response:');
     console.log(data);
 
     res.send(data);
   } catch(err) {
-    console.log("> Error:");
+    console.log('> Error:');
     console.log(err.response.data);
     res.status(err.response.status).send(err.response.data);
   }
