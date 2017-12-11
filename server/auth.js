@@ -40,7 +40,7 @@ router.get('/', (req, res) => {
   console.log('GET: /auth');
 
   if (req.user) {
-    res.send(req.user._json);
+    res.send(Object.assign({}, req.user._json, { user_limit: config.external_limit }));
   } else {
     res.status(401).send({ message: 'Not authenticated' });
   }

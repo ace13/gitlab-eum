@@ -3,12 +3,13 @@
     <img v-bind:src="user.avatar_url" class="d-flex align-self-center mr-3 rounded-circle user-avatar" alt="Avatar"/>
     <div class="media-body">
       <h4 class="mt-0">{{ user.name }}</h4>
-      <p class="text-muted"><a v-bind:href="user.web_url">@{{ user.username }}</a> - Created at {{ user.created_at | readable_date }}</p>
+      <p class="text-muted"><a v-bind:href="user.web_url">@{{ user.username }}</a> - {{ user.state }} - Created at {{ user.created_at | readable_date }}</p>
 
       <!-- Read if current user is an admin, show advanced features -->
       <template v-if="false">
-        <a href="#" @click.prevent="user.http.fetch()" class="btn btn-sm btn-primary" title="Reload User Data"><i class="fa fa-cog"></i></a>
-        <a href="#" @click.prevent="user.http.destroy()" class="btn btn-sm btn-danger" title="Remove User"><i class="fa fa-eraser"></i></a>
+        <a href="#" @click.prevent="user.http.fetch()" class="btn btn-sm btn-outline-primary" title="Reload User Data"><i class="fa fa-cog"></i></a>
+        <a href="#" @click.prevent="user.state == 'blocked' ? user.http.unblock() : user.http.block()" class="btn btn-sm btn-outline-warning" :title="user.state == 'blocked' ? 'Unblock' : 'Block'"><i class="fa" :class="{ 'fa-lock': user.state != 'blocked', 'fa-unlock': user.state == 'blocked' }"></i></a>
+        <a href="#" @click.prevent="user.http.destroy()" class="btn btn-sm btn-outline-danger" title="Remove User"><i class="fa fa-eraser"></i></a>
       </template>
     </div>
   </li>

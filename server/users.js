@@ -13,6 +13,26 @@ const axios  = require('axios').create({
   }
 });
 
+router.get('/audit', async (req, res) => {
+  console.log('GET: /users/audit');
+
+  try {
+    const queryText = 'SELECT * FROM audit_events WHERE user_id = $1';
+    console.log('> DB Query:');
+    console.log(queryText);
+    const dbResponse = await db.query(queryText, [req.user.id]);
+    console.log('> DB Response:');
+    console.log(dbResponse);
+    var rows = dbResponse.rows;
+
+    res.send(rows);
+  } catch(err) {
+    console.log("> DB Error:");
+    console.log(err);
+    return res.status(500).send({ 'message': "Database error occured" });
+  }
+});
+
 router.get('/', async (req, res) => {
   console.log('GET: /users');
 
@@ -25,7 +45,7 @@ router.get('/', async (req, res) => {
     console.log(dbResponse);
     var rows = dbResponse.rows;
 
-    res.send(rows.map((row) => row.id));
+    res.send(rows.map((row) => row.user_id));
   } catch(err) {
     console.log("> DB Error:");
     console.log(err);
@@ -40,6 +60,22 @@ router.post('/', async (req, res) => {
     .filter( key => !['admin', 'skip_confirmation'].includes(key) )
     .reduce( (rs, key) => (rs[key] = req.body[key], rs), {} );
 
+  try {
+    const queryText = 'SELECT * FROM external_users WHERE owner_id = $1';
+    console.log('> DB Query:');
+    console.log(queryText);
+    const dbResponse = await db.query(queryText, [req.user.id]);
+    console.log('> DB Response:');
+    console.log(dbResponse);
+
+    if (dbResponse.rowCount >= config.external_limit) {
+      return res.status(400).send({ 'message': 'External user limit reached' });
+    }
+  } catch(err) {
+    console.log("> DB Error:");
+    console.log(err);
+    return res.status(500).send({ 'message': "Database error occured" });
+  }
   // TODO: Apply further validation on input
   // XXX   Make sure user is allowed to create
 
@@ -71,7 +107,7 @@ router.post('/', async (req, res) => {
       const queryText = 'INSERT INTO audit_events(event, user_id, message) VALUES($1, $2, $3)';
       console.log('> DB Query:');
       console.log(queryText);
-      const auditresp = await db.query(queryText, ['user.create', req.user.id, `Created account: ${dbResponse.name} <${dbResponse.email}>, username: ${dbResponse.username}`]);
+      const auditresp = await db.query(queryText, ['user.create', req.user.id, `Created account: ${data.name} <${data.email}>, username: ${data.username}`]);
       console.log('> DB Response:');
       console.log(auditresp);
     } catch(err) {

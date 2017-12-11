@@ -35,6 +35,18 @@ var User = module.exports = {
         }
       },
       update: false,
+      block: {
+        method: 'POST',
+        route: '{id}/block',
+        apply: true,
+        data: false,
+      },
+      unblock: {
+        method: 'POST',
+        route: '{id}/unblock',
+        apply: true,
+        data: false,
+      }
     }
   },
 };

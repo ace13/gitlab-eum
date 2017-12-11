@@ -28,11 +28,11 @@
             <h4>Add external users</h4>
             <p>Employees and students are allowed to create external users for collaboration with actors outside of Linköpings University.<br/>
               This application will track and allow creation of such external users, up to a number configurable by the administrators.<br/></p>
-            <button class="btn btn-success" @click="showCreationForm = !showCreationForm">New External User</button>
+            <button class="btn btn-success" :disabled="external.length >= user.user_limit" @click="showCreationForm = !showCreationForm">New External User</button>
           </div>
         </transition>
 
-        <h2 class="mt-4 mb-3">Existing external users:</h2>
+        <h2 class="mt-4 mb-3">Existing external users: ({{ external.length }}/{{ user.user_limit }})</h2>
         <hr/>
         <transition name="fade" mode="out-in">
           <ul class="list-unstyled" is="transition-group" name="flip-list" v-if="external">

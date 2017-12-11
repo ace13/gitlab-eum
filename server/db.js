@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS external_users (
   user_id INTEGER NOT NULL,
   owner_id INTEGER NOT NULL,
   username VARCHAR(256) NOT NULL,
-  active BOOLEAN DEFAULT TRUE,
+  state VARCHAR(16) DEFAULT 'active',
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
 );
