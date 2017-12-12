@@ -9,7 +9,7 @@ var app = express();
 
 app.use(require('body-parser').json());
 app.use(require('cookie-parser')());
-app.use(require('express-session')({ secret: config.express.session_secret, resave: false, saveUninitialized: false }));
+app.use(require('express-session')({ secret: config.session.secret, store: config.session.store, resave: false, saveUninitialized: false }));
 
 app.use(passport.initialize());
 app.use(passport.session());
