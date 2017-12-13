@@ -101,7 +101,6 @@ export default {
     axios.get('/auth')
       .then((response) => {
         console.log("Signed in as " + response.data.username);
-        console.log(response.data);
         this.user = response.data;
       }, (err) => {
         this.user = null;
@@ -112,12 +111,10 @@ export default {
 
   methods: {
     closeCreator (ev) {
-      console.log("User creator closed with:");
-      console.log(ev);
       this.showCreationForm = false;
 
       if (ev && typeof(ev) === 'object') {
-        this.external.unshift(ev);
+        this.external.push(this.$model('user', {id: ev.id}));
       }
     }
   },

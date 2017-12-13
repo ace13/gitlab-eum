@@ -1,16 +1,16 @@
 <template>
-  <li class="media mt-2 user-object">
+  <li class="media mt-2 user-object" @mouseover="adminTools = true" @mouseleave="adminTools = false">
     <img v-bind:src="user.avatar_url" class="d-flex align-self-center mr-3 rounded-circle user-avatar" alt="Avatar"/>
     <div class="media-body">
       <h4 class="mt-0">{{ user.name }} &lt;<a :href="'mailto:'+user.name+' <'+user.email+'>'">{{ user.email }}</a>&gt;</h4>
       <p class="text-muted"><a v-bind:href="user.web_url">@{{ user.username }}</a> - <span :class="{'text-danger': user.state != 'active'}">{{ user.state }}</span> - Created at {{ user.created_at | readable_date }}</p>
 
-      <!-- Read if current user is an admin, show advanced features -->
-      <template v-if="false">
-        <a href="#" @click.prevent="user.http.fetch()" class="btn btn-sm btn-outline-primary" title="Reload User Data"><i class="fa fa-cog"></i></a>
-        <a href="#" @click.prevent="user.state == 'blocked' ? user.http.unblock() : user.http.block()" class="btn btn-sm btn-outline-warning" :title="user.state == 'blocked' ? 'Unblock' : 'Block'"><i class="fa" :class="{ 'fa-lock': user.state != 'blocked', 'fa-unlock': user.state == 'blocked' }"></i></a>
-        <a href="#" @click.prevent="user.http.destroy()" class="btn btn-sm btn-outline-danger" title="Remove User"><i class="fa fa-eraser"></i></a>
-      </template>
+    </div>
+    <!-- Read if current user is an admin, show advanced features -->
+    <div id="adminTools" class="btn-group btn-group-lg" v-show="adminTools" v-if="false">
+      <a href="#" @click.prevent="user.http.fetch()" class="btn btn-sm btn-outline-primary" title="Reload User Data"><i class="fa fa-cog"></i></a>
+      <a href="#" @click.prevent="user.state == 'blocked' ? user.http.unblock() : user.http.block()" class="btn btn-sm btn-outline-warning" :title="(user.state == 'blocked' ? 'Unblock' : 'Block') + ' User'"><i class="fa" :class="{ 'fa-lock': user.state != 'blocked', 'fa-unlock': user.state == 'blocked' }"></i></a>
+      <a href="#" @click.prevent="user.http.destroy()" class="btn btn-sm btn-outline-danger" title="Remove User"><i class="fa fa-eraser"></i></a>
     </div>
   </li>
 </template>
@@ -25,7 +25,8 @@ export default {
 
   data () {
     return {
-      user: {}
+      user: {},
+      adminTools: false
     }
   },
 
@@ -47,6 +48,11 @@ export default {
 </script>
 
 <style scoped>
+#adminTools {
+  margin-top: 1em;
+  margin-right: 1em;
+}
+
 .user-avatar {
   width: 64px;
   height: 64px;

@@ -131,8 +131,7 @@ export default {
 
       try {
         var res = await this.user.http.store();
-        console.log("Result:");
-        console.log(res);
+        this.user = Object.assign({}, this.user, res.data);
       } catch(err) {
         console.log(err);
         if (err.response.status === 401) {
@@ -148,8 +147,6 @@ export default {
         this.user.username = null;
         return false;
       }
-
-      console.log(this.user);
 
       this.close(this.user);
     }
