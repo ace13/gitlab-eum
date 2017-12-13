@@ -106,6 +106,10 @@ export default {
       if (!this.user.email || !this.user.email.includes('@') || !this.user.email.includes('.')) {
         this.errors.email = "Specify a valid email address";
       }
+      else if (this.user.email.endsWith('@liu.se'))
+      {
+        this.errors.email = "LiU users should use their LiU-ID to sign in";
+      }
 
       var username = this.user.username || (this.user.name && this.username_placeholder);
 
