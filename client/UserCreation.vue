@@ -106,8 +106,7 @@ export default {
       if (!this.user.email || !this.user.email.includes('@') || !this.user.email.includes('.')) {
         this.errors.email = "Specify a valid email address";
       }
-      else if (this.user.email.endsWith('@liu.se'))
-      {
+      else if (this.user.email.match(/@(.+\.)?liu\.se$/)) {
         this.errors.email = "LiU users should use their LiU-ID to sign in";
       }
 

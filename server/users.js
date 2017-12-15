@@ -55,6 +55,10 @@ router.post('/', async (req, res) => {
     }
   }
 
+  if (req.body.email.match(/@(.*\.)?liu\.se$/)) {
+    return res.status(400).send({ 'message': 'LiU users should use their LiU-ID to sign in here' })
+  }
+
   // TODO: Apply further validation on input
   // XXX   Make sure user is allowed to create
 
