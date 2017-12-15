@@ -34,21 +34,27 @@ module.exports = {
     reset_password: true
   },
 
-  // Can users deactivate external users created by them
-  can_user_deactivate: false,
-  // Default limit of external users
-  external_limit: 5,
+  user: {
+    // Can users deactivate external users created by them
+    can_deactivate: false,
+    // Default limit of external users
+    external_limit: 5,
+  }
 
   // Apply configuration per user
   //
   // *user* will contain the parameters from https://gitlab.liu.se/help/api/users.md#for-admin
+  // *config* will contain the same as the `user` block
   per_user: function(user, config) {
     if (user.external) {
       // Disallow creation by external users
       config.external_limit = 0
-    } else if (user.username =~ /^[a-z]{4}[0-9]{2}$/) {
+    } else if (user.is_admin) {
       // Unlimited external users
-      config.external_limit = null
+      config.external_limit = -1
+    } else if (user.username =~ /^[a-z]{4}[0-9]{2}$/) {
+      // More external users
+      config.external_limit = 15
     }
   }
 }

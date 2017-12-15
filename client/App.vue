@@ -32,7 +32,7 @@
           </div>
         </transition>
 
-        <h2 class="mt-4 mb-3">Existing external users: ({{ external.length }}/{{ user.user_limit }})</h2>
+        <h2 class="mt-4 mb-3">Existing external users: ({{ external.length }}/<span v-if="user.user_limit > 0">{{ user.user_limit }}</span><span v-else>&infin;</span>)</h2>
         <hr/>
         <transition name="fade" mode="out-in">
           <ul class="list-unstyled" is="transition-group" name="flip-list" v-if="external">

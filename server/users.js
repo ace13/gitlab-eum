@@ -37,17 +37,19 @@ router.post('/', async (req, res) => {
     .filter( key => ['email','username','name','skype','linkedin','twitter','website_url','organization','bio','location','avatar'].includes(key) )
     .reduce( (rs, key) => (rs[key] = req.body[key], rs), {} );
 
-  try {
-    const queryText = 'SELECT * FROM external_users WHERE owner_id = $1';
-    const dbResponse = await db.query(queryText, [req.user.id]);
+  if (req.user.eum_settings.external_limit > 0) {
+    try {
+      const queryText = 'SELECT * FROM external_users WHERE owner_id = $1';
+      const dbResponse = await db.query(queryText, [req.user.id]);
 
-    if (dbResponse.rowCount >= config.external_limit) {
-      return res.status(403).send({ 'message': 'External user limit reached' });
+      if (dbResponse.rowCount >= req.user.eum_settings.external_limit) {
+        return res.status(403).send({ 'message': 'External user limit reached' });
+      }
+    } catch(err) {
+      console.log("> DB Error:");
+      console.log(err);
+      return res.status(500).send({ 'message': "Database error occured" });
     }
-  } catch(err) {
-    console.log("> DB Error:");
-    console.log(err);
-    return res.status(500).send({ 'message': "Database error occured" });
   }
 
   // TODO: Apply further validation on input

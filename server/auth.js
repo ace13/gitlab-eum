@@ -15,6 +15,13 @@ var _strategy = new GitLabStrategy({
     baseURL: config.gitlab.url
   }, (access, refresh, profile, cb) => {
     var user = Object.assign({}, profile, { _token: access, _refresh: refresh });
+
+    var userConfig = Object.assign({}, config.user);
+    if (typeof(config.per_user) === 'function') {
+      config.per_user(Object.assign({}, user._json), userConfig);
+    }
+    user.eum_settings = userConfig
+
     cb(null, user);
   }
 );
@@ -40,7 +47,7 @@ router.get('/', (req, res) => {
   console.log('GET: /auth');
 
   if (req.user) {
-    res.send(Object.assign({}, req.user._json, { user_limit: config.external_limit }));
+    res.send(Object.assign({}, req.user._json, { eum_settings: req.user.eum_settings }));
   } else {
     res.status(401).send({ message: 'Not authenticated' });
   }
