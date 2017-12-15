@@ -17,6 +17,7 @@
     "axios": "^0.17.0",
     "bootstrap": "^4.0.0-beta.2",
     "connect-ensure-login": "^0.1.1",
+    "connect-redis": "^3.3.2",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.2",
     "express-promise-router": "^2.0.0",
