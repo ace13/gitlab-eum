@@ -1,8 +1,9 @@
 <template>
   <div>
-    <div class="container text-center mb-5">
+    <div class="container text-center mb-4">
       <!-- TODO -->
-      <h1>&lt;Unidentified Header-like Object&trade;&gt;</h1>
+      <img src="LiU_primary_black.png" alt="Linköpings University" style="height: 96px"/>
+      <h4>External User Manager</h4>
     </div>
 
     <div class="container my-4" v-if="user">
