@@ -33,9 +33,12 @@ router.post('/', async (req, res) => {
   console.log("POST: /users");
   console.log(req.body);
 
-  req.body = Object.keys(req.body)
+  req.body = Object.assign({},
+    config.creation_default,
+    Object.keys(req.body)
     .filter( key => ['email','username','name','skype','linkedin','twitter','website_url','organization','bio','location','avatar'].includes(key) )
-    .reduce( (rs, key) => (rs[key] = req.body[key], rs), {} );
+    .reduce( (rs, key) => (rs[key] = req.body[key], rs), {} )
+  )
 
   if (req.user.eum_settings.external_limit > 0) {
     try {
