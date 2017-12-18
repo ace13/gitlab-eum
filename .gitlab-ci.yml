@@ -10,7 +10,7 @@ build:
   script:
     - npm install
     - mkdir -p public/js public/css
-    - echo "TODO: Tests"
+    - echo Tests still TODO
 
 package:
   stage: deploy
