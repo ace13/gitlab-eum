@@ -9,13 +9,13 @@ build:
   stage: test
   script:
     - npm install
-    - mkdir -p public/js public/css
     - echo Tests still TODO
 
 package:
   stage: deploy
   script:
     - npm install
+    - mkdir -p public/js public/css
     - npm run build
     - npm uninstall --save-prod
     - npm pack
