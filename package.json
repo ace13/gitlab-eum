@@ -1,6 +1,6 @@
 {
   "name": "gitlab-eum",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "GitLab External User Manager",
   "author": "Alexander Olofsson <alexander.olofsson@liu.se>",
   "scripts": {
