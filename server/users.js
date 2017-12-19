@@ -40,6 +40,10 @@ router.post('/', async (req, res) => {
     .reduce( (rs, key) => (rs[key] = req.body[key], rs), {} )
   )
 
+  if (req.user.eum_settings.external_limit == 0) {
+      return res.status(401).send({ 'message': 'No external users allowed' });
+  }
+
   if (req.user.eum_settings.external_limit > 0) {
     try {
       const queryText = 'SELECT * FROM external_users WHERE owner_id = $1';
