@@ -3,7 +3,7 @@
     <div class="container text-center mb-4">
       <!-- TODO -->
       <img src="LiU_primary_black.png" alt="Linköpings University" style="height: 96px"/>
-      <h4>External User Manager</h4>
+      <h4>GitLab External User Manager</h4>
     </div>
 
     <div class="container my-4" v-if="user">
